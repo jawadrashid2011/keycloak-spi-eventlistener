@@ -1,0 +1,48 @@
+version: '3'
+
+volumes:
+  keycloak-db-data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres:13.7
+    container_name: postgres
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak_admin
+      POSTGRES_PASSWORD: keycloak_password
+  keycloak:
+    build: .
+    container_name: custom-auth-service
+    environment:
+      #Admin Credentials
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      # KC_DB_URL: 'jdbc:postgresql://postgres/keycloak'
+      KC_DB_URL_HOST: postgres
+      KC_DB_USERNAME: keycloak_admin
+      KC_DB_PASSWORD: keycloak_password
+      KC_HEALTH_ENABLED: 'true'
+      KC_METRICS_ENABLED: 'true'
+      KC_HOSTNAME: localhost
+      PROXY_ADDRESS_FORWARDING: "true"
+      # KC_LOG_LEVEL: DEBUG
+    command:
+      # - "-v ./importexport/export/:/opt/keycloak/data/import"
+      # - "-v start --optimized"
+      - "start-dev"
+      # - "start"
+      # - "--optimized"
+      # - "--import-realm"
+    ports:
+      - 8443:8443
+      - 8080:8080
+    depends_on:
+      - postgres
