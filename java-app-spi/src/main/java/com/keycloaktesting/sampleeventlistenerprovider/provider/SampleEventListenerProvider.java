@@ -1,5 +1,6 @@
 package com.keycloaktesting.sampleeventlistenerprovider.provider;
 
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.keycloak.events.Event;
@@ -22,7 +23,7 @@ public class SampleEventListenerProvider implements EventListenerProvider {
     @Override
     public void onEvent(AdminEvent adminEvent, boolean b) {
 
-        System.out.println("Admin Event Occurred:" + toString(adminEvent));
+//        System.out.println("Admin Event Occurred:" + toString(adminEvent));
     }
 
     @Override
@@ -55,6 +56,20 @@ public class SampleEventListenerProvider implements EventListenerProvider {
         sb.append(", ipAddress=");
 
         sb.append(event.getIpAddress());
+        
+        sb.append(", time=");
+
+        sb.append(event.getTime());
+        
+        sb.append(", sessionId=");
+
+        sb.append(event.getSessionId());
+        
+        sb.append(", details=");
+        
+        for(Map.Entry<String, String> entry : event.getDetails().entrySet()) {
+        	sb.append(entry.getKey() + ":" + entry.getValue().toString() + ",");
+        }        
 
 
 //        if (event.getError() != null) {
